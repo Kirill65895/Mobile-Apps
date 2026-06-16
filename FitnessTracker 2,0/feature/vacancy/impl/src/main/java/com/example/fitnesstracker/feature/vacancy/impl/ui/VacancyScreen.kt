@@ -1,12 +1,5 @@
 package com.example.fitnesstracker.feature.vacancy.impl.ui
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.Crossfade
-import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.expandVertically
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
@@ -42,20 +34,12 @@ fun VacancyScreen(viewModel: VacancyViewModel = hiltViewModel()) {
     val state by viewModel.state.collectAsState()
     val canAnalyze by viewModel.canAnalyze.collectAsState()
 
-    Scaffold(topBar = {
-        TopAppBar(title = { Text("Анализ вакансии (ИИ)") })
-    }) { padding ->
+    Scaffold(topBar = { TopAppBar(title = { Text("Анализ вакансии (ИИ)") }) }) { padding ->
         Column(
             modifier = Modifier.fillMaxSize().padding(padding).padding(16.dp)
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            // Бейдж версии (Free/Pro) — наглядное отличие productFlavor.
-            AssistChip(
-                onClick = {},
-                label = { Text(if (viewModel.isProVersion) "Pro: ИИ-анализ доступен" else "Free: ИИ-анализ в Pro") },
-            )
-
             OutlinedTextField(
                 value = vacancy,
                 onValueChange = viewModel::onVacancyChange,
@@ -83,41 +67,25 @@ fun VacancyScreen(viewModel: VacancyViewModel = hiltViewModel()) {
                 ) { Text("Очистить") }
             }
 
-            // АНИМАЦИЯ 1 (Crossfade): плавная смена состояний загрузки/ошибки/результата.
-            Crossfade(targetState = state, label = "vacancy_state") { s ->
-                when (s) {
-                    VacancyUiState.Idle -> Unit
-                    VacancyUiState.Loading -> Row(
-                        Modifier.fillMaxWidth().padding(top = 8.dp),
-                        horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        CircularProgressIndicator()
-                        Text("  Анализируем…")
-                    }
-                    is VacancyUiState.Error -> Text(
-                        s.message,
-                        color = MaterialTheme.colorScheme.error,
-                        modifier = Modifier.padding(top = 8.dp),
-                    )
-                    is VacancyUiState.Success -> {
-                        // АНИМАЦИЯ 2 (AnimatedVisibility + animateContentSize): результат появляется
-                        // и плавно меняет высоту под объём текста.
-                        AnimatedVisibility(
-                            visible = true,
-                            enter = fadeIn() + expandVertically(),
-                            exit = fadeOut() + shrinkVertically(),
-                        ) {
-                            Card(Modifier.fillMaxWidth().animateContentSize()) {
-                                Text(
-                                    s.text,
-                                    Modifier.padding(16.dp),
-                                    style = MaterialTheme.typography.bodyMedium,
-                                )
-                            }
-                        }
-                    }
+            when (val s = state) {
+                VacancyUiState.Idle -> Unit
+                VacancyUiState.Loading -> Row(
+                    Modifier.fillMaxWidth().padding(top = 8.dp),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    CircularProgressIndicator()
+                    Text("  Анализируем…")
                 }
+                is VacancyUiState.Success -> Card(Modifier.fillMaxWidth()) {
+                    Text(s.text, Modifier.padding(16.dp),
+                        style = MaterialTheme.typography.bodyMedium)
+                }
+                is VacancyUiState.Error -> Text(
+                    s.message,
+                    color = MaterialTheme.colorScheme.error,
+                    modifier = Modifier.padding(top = 8.dp),
+                )
             }
         }
     }
