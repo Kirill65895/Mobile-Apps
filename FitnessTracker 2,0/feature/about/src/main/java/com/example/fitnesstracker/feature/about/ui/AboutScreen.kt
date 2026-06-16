@@ -19,6 +19,15 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.viewinterop.AndroidView
+import android.view.LayoutInflater
+import android.widget.RatingBar
+import android.widget.TextView
+import com.example.fitnesstracker.feature.about.R
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -48,6 +57,28 @@ fun AboutScreen(viewModel: AboutViewModel = hiltViewModel()) {
                     Text("Адрес офиса:", style = MaterialTheme.typography.labelLarge)
                     Text(office.address, style = MaterialTheme.typography.bodyMedium)
                 }
+            }
+
+            // XML↔Compose interop (Семестровая): классический RatingBar из XML внутри Compose.
+            // Данные передаются в обе стороны: Compose-состояние -> View и обратно через слушатель.
+            var rating by remember { mutableStateOf(0f) }
+            Card(Modifier.fillMaxWidth()) {
+                AndroidView(
+                    modifier = Modifier.fillMaxWidth(),
+                    factory = { ctx ->
+                        LayoutInflater.from(ctx).inflate(R.layout.view_app_rating, null, false)
+                    },
+                    update = { view ->
+                        val bar = view.findViewById<RatingBar>(R.id.ratingBar)
+                        val label = view.findViewById<TextView>(R.id.ratingLabel)
+                        bar.rating = rating
+                        label.text =
+                            if (rating > 0f) "Ваша оценка: ${rating.toInt()} из 5" else "Оцените приложение"
+                        bar.setOnRatingBarChangeListener { _, value, fromUser ->
+                            if (fromUser) rating = value
+                        }
+                    },
+                )
             }
 
             OfficeMap(modifier = Modifier.fillMaxWidth().height(200.dp))

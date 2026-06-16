@@ -3,6 +3,7 @@ package com.example.fitnesstracker.feature.vacancy.impl.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fitnesstracker.feature.vacancy.api.domain.model.AnalysisResult
+import com.example.fitnesstracker.core.common.FeatureConfig
 import com.example.fitnesstracker.feature.vacancy.api.domain.repository.VacancyAnalysisRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,7 +25,11 @@ sealed interface VacancyUiState {
 @HiltViewModel
 class VacancyViewModel @Inject constructor(
     private val repository: VacancyAnalysisRepository,
+    featureConfig: FeatureConfig,
 ) : ViewModel() {
+
+    // Отличие Free/Pro сборок (productFlavor): ИИ-анализ доступен только в Pro.
+    val isProVersion: Boolean = featureConfig.isProVersion
 
     private val _vacancy = MutableStateFlow("")
     val vacancy: StateFlow<String> = _vacancy.asStateFlow()
@@ -46,6 +51,12 @@ class VacancyViewModel @Inject constructor(
 
     fun analyze() {
         if (_vacancy.value.isBlank() || _skills.value.isBlank()) return
+        if (!isProVersion) {
+            _state.value = VacancyUiState.Error(
+                "ИИ-анализ вакансий доступен только в Pro-версии (текущая сборка — Free)."
+            )
+            return
+        }
         _state.value = VacancyUiState.Loading
         viewModelScope.launch {
             _state.value = when (val r = repository.analyze(_vacancy.value, _skills.value)) {
