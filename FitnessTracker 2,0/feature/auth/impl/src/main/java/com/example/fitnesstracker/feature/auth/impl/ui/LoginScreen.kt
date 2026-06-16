@@ -8,10 +8,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -20,6 +23,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -30,6 +34,9 @@ fun LoginScreen(
     viewModel: LoginViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsState()
+    val email by viewModel.email.collectAsState()
+    val emailError by viewModel.emailError.collectAsState()
+    val emailValid by viewModel.emailValid.collectAsState()
     val activity = LocalContext.current.findActivity()
 
     LaunchedEffect(state) {
@@ -43,15 +50,34 @@ fun LoginScreen(
     ) {
         Text("Fitness Tracker", style = MaterialTheme.typography.headlineMedium)
         Text(
-            "Войдите, чтобы сохранять тренировки",
+            "Войдите или зарегистрируйтесь",
             style = MaterialTheme.typography.bodyMedium,
             textAlign = TextAlign.Center,
-            modifier = Modifier.padding(top = 8.dp, bottom = 32.dp),
+            modifier = Modifier.padding(top = 8.dp, bottom = 28.dp),
         )
 
         if (state is LoginUiState.Loading) {
             CircularProgressIndicator()
         } else {
+            // --- Регистрация по Google-почте с проверкой адреса ---
+            OutlinedTextField(
+                value = email,
+                onValueChange = viewModel::onEmailChange,
+                label = { Text("Google-почта (gmail.com)") },
+                singleLine = true,
+                isError = emailError != null,
+                supportingText = { emailError?.let { Text(it) } },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                modifier = Modifier.fillMaxWidth(),
+            )
+            Button(
+                onClick = { activity?.let(viewModel::loginWithGoogle) },
+                enabled = emailValid,
+                modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
+            ) { Text("Продолжить с Google") }
+
+            HorizontalDivider(Modifier.padding(vertical = 20.dp))
+
             Button(
                 onClick = { activity?.let(viewModel::loginWithVk) },
                 modifier = Modifier.fillMaxWidth(),

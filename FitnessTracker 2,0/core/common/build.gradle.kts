@@ -5,4 +5,5 @@ plugins {
 // Содержит общие утилиты, базовые обёртки и константы (критерий №4).
 dependencies {
     implementation(libs.kotlinx.coroutines.core)
+    testImplementation(libs.junit)
 }

@@ -44,3 +44,8 @@ include(":core:security")    // EncryptedSharedPreferences за интерфей
 include(":feature:auth:api")
 include(":feature:auth:impl")
 include(":feature:about")    // раздел «О нас» + карта (одномодульная фича)
+
+// ---- Лабораторная №7: Firebase ----
+include(":core:remoteconfig")   // Remote Config за интерфейсом RemoteConfigService
+include(":feature:profile:api")
+include(":feature:profile:impl") // Firestore-профиль + экран профиля

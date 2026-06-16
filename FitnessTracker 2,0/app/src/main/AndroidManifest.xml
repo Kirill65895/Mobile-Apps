@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <!-- Лаб. №7: на Android 13+ нужно разрешение на показ уведомлений (запрашивается в runtime) -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:name=".FitnessApp"
         android:allowBackup="true"
@@ -19,5 +23,22 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- Лаб. №7: сервис обработки FCM-событий. exported=false — вызывает только инфраструктура FCM -->
+        <service
+            android:name=".fcm.PushMessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
+        <!-- Иконка и цвет уведомлений по умолчанию (для notification-сообщений из фона) -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/ic_stat_notify" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="fitness_default" />
     </application>
 </manifest>

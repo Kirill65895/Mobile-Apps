@@ -10,6 +10,9 @@ import android.app.Activity
 interface AuthService {
     suspend fun loginWithVk(activity: Activity): AuthResult
     suspend fun loginWithYandex(activity: Activity): AuthResult
+
+    /** Регистрация/вход по Google-аккаунту. email уже должен быть провалидирован. */
+    suspend fun loginWithGoogle(activity: Activity, email: String): AuthResult
     fun logout()
     /** Возвращает сохранённого пользователя или null (используется для пропуска экрана входа). */
     fun getCurrentUser(): User?

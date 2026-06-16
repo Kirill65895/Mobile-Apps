@@ -21,6 +21,9 @@ junit = "4.13.2"
 # --- Лабораторная №6: сторонние сервисы ---
 appmetrica = "7.+"
 securityCrypto = "1.1.0-alpha06"
+# --- Лабораторная №7: Firebase ---
+googleServices = "4.4.2"
+firebaseBom = "33.7.0"
 
 [libraries]
 # AndroidX core
@@ -59,6 +62,13 @@ kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-
 appmetrica-analytics = { group = "io.appmetrica.analytics", name = "analytics", version.ref = "appmetrica" }
 androidx-security-crypto = { group = "androidx.security", name = "security-crypto", version.ref = "securityCrypto" }
 
+# --- Лабораторная №7: Firebase (версии артефактов задаёт BOM) ---
+firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
+firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging" }
+firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics" }
+firebase-config = { group = "com.google.firebase", name = "firebase-config" }
+firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore" }
+
 # Тесты
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 konsist = { group = "com.lemonappdev", name = "konsist", version.ref = "konsist" }
@@ -72,3 +82,4 @@ kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
+google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }

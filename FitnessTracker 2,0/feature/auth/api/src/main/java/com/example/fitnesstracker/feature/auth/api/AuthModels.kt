@@ -12,6 +12,7 @@ data class User(
 enum class AuthProvider(val key: String) {
     VK("vk"),
     YANDEX("yandex"),
+    GOOGLE("google"),
 }
 
 /** Результат авторизации в наших терминах. */

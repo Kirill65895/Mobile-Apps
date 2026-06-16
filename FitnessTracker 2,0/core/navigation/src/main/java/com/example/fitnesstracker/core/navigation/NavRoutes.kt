@@ -10,4 +10,5 @@ object NavRoutes {
     const val STATISTICS = "statistics"
     const val ABOUT = "about"
     const val LOGIN = "login"
+    const val PROFILE = "profile"
 }

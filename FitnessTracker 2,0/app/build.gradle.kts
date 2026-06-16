@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
+    alias(libs.plugins.google.services)   // Лаб. №7: обрабатывает google-services.json
 }
 android {
     namespace = "com.example.fitnesstracker"
@@ -45,6 +46,14 @@ dependencies {
     implementation(project(":feature:auth:api"))
     implementation(project(":feature:auth:impl"))
     implementation(project(":feature:about"))
+
+    // --- Лабораторная №7: Firebase ---
+    implementation(project(":core:remoteconfig"))
+    implementation(project(":feature:profile:api"))
+    implementation(project(":feature:profile:impl"))
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.messaging)   // FCM (PushMessagingService)
+    implementation(libs.firebase.analytics)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

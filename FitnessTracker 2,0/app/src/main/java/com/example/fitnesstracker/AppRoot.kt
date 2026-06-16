@@ -18,10 +18,16 @@ import com.example.fitnesstracker.core.navigation.NavRoutes
 @Composable
 fun AppRoot(
     startDestination: String,
+    deepLinkRoute: String? = null,
     featureEntries: Set<FeatureEntry>,
     bottomNavItems: List<BottomNavItem>,
 ) {
     val navController = rememberNavController()
+
+    // Переход по нажатию на push-уведомление (Лаб. №7).
+    androidx.compose.runtime.LaunchedEffect(deepLinkRoute) {
+        if (!deepLinkRoute.isNullOrBlank()) navController.navigate(deepLinkRoute)
+    }
     val backStack by navController.currentBackStackEntryAsState()
     val currentRoute = backStack?.destination?.route
 
