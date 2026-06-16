@@ -23,10 +23,11 @@ class WorkoutsAnalyticsTest {
 
     private val repository = FakeWorkoutRepository()
     private val analytics = FakeAnalyticsService()
+    private val crashReporter = FakeCrashReporter()
 
     @Test
     fun `adding a workout sends workout_added event`() = runTest {
-        val viewModel = AddWorkoutViewModel(AddWorkoutUseCase(repository), analytics)
+        val viewModel = AddWorkoutViewModel(AddWorkoutUseCase(repository), analytics, crashReporter)
 
         viewModel.save(WorkoutType.RUNNING, durationMinutes = 30, onDone = {})
         advanceUntilIdle()

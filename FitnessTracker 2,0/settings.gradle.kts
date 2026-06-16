@@ -49,3 +49,8 @@ include(":feature:about")    // раздел «О нас» + карта (одн�
 include(":core:remoteconfig")   // Remote Config за интерфейсом RemoteConfigService
 include(":feature:profile:api")
 include(":feature:profile:impl") // Firestore-профиль + экран профиля
+include(":core:crashreporting")  // Лаб. №8: Crashlytics + AppMetrica за фасадом CrashReporter
+
+// ---- Лабораторная №9: интеграция ИИ (GigaChat) ----
+include(":feature:vacancy:api")
+include(":feature:vacancy:impl")

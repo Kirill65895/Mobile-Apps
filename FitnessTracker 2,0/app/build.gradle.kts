@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
     alias(libs.plugins.google.services)   // Лаб. №7: обрабатывает google-services.json
+    alias(libs.plugins.firebase.crashlytics)  // Лаб. №8: загрузка mapping.txt для деобфускации
 }
 android {
     namespace = "com.example.fitnesstracker"
@@ -18,7 +19,10 @@ android {
     }
     buildTypes {
         release {
-            isMinifyEnabled = false
+            // Лаб. №8: R8 — минификация + обфускация + удаление неиспользуемых ресурсов.
+            // Создаёт app/build/outputs/mapping/release/mapping.txt для деобфускации отчётов.
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
@@ -51,9 +55,13 @@ dependencies {
     implementation(project(":core:remoteconfig"))
     implementation(project(":feature:profile:api"))
     implementation(project(":feature:profile:impl"))
+    implementation(project(":feature:vacancy:api"))
+    implementation(project(":feature:vacancy:impl"))
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.messaging)   // FCM (PushMessagingService)
     implementation(libs.firebase.analytics)
+    implementation(libs.firebase.crashlytics) // Лаб. №8
+    implementation(project(":core:crashreporting"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

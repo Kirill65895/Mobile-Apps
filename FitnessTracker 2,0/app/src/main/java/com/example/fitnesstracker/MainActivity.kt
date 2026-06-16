@@ -22,6 +22,7 @@ class MainActivity : ComponentActivity() {
     @Inject lateinit var featureEntries: Set<@JvmSuppressWildcards FeatureEntry>
     @Inject lateinit var bottomNavProviders: Set<@JvmSuppressWildcards BottomNavProvider>
     @Inject lateinit var authService: AuthService
+    @Inject lateinit var crashReporter: com.example.fitnesstracker.core.common.CrashReporter
 
     private val notificationPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { /* результат не критичен */ }
@@ -32,6 +33,16 @@ class MainActivity : ComponentActivity() {
 
         val startDestination =
             if (authService.isLoggedIn()) NavRoutes.WORKOUTS else NavRoutes.LOGIN
+
+        // Лаб. №8: привязываем отчёты о крашах к пользовательскому контексту
+        // (только технический id и провайдер — без персональных данных).
+        authService.getCurrentUser()?.let { user ->
+            crashReporter.setUserId(user.id)
+            crashReporter.setCustomKey(
+                com.example.fitnesstracker.core.common.CrashKeys.AUTH_PROVIDER,
+                user.provider.key,
+            )
+        }
         // Если приложение открыто нажатием на уведомление — маршрут перехода.
         val deepLinkRoute = intent?.getStringExtra(NotificationHelper.EXTRA_ROUTE)
 
