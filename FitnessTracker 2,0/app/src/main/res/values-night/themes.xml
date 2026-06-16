@@ -1,0 +1,5 @@
+<resources>
+    <!-- Тёмная тема. Платформенный родитель — без зависимости от
+         Material Components, чтобы избежать ошибок ресурс-линковки. -->
+    <style name="Theme.FitnessTracker" parent="android:Theme.Material.NoActionBar" />
+</resources>
